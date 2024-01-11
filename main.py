@@ -298,8 +298,9 @@ async def update_book(id:Annotated[int,Form()]=None,
     return book
 
 
-    
-
+@app.get("/books/search",response_model=Page[schemas.Books])
+async def search_book(data:str,db:Session=Depends(utils.get_db)):
+    return paginate(query.books_search(db=db,data=data))
 
 
 add_pagination(app)

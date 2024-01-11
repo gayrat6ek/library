@@ -201,3 +201,23 @@ def book_update(db:Session,id,language,file,title,title_known,title_mono,author,
         db.commit()
         db.refresh(query)
     return query
+
+
+def books_search(db:Session,data):
+    query = db.query(models.Books).filter(or_(models.Books.title.ilike(f"%{data}%"),
+                                              models.Books.author.ilike(f"%{data}%"),
+                                              models.Books.subjects.ilike(f"%{data}%"),
+                                                models.Books.language.ilike(f"%{data}%"),
+                                                models.Books.text_ammabegin.ilike(f"%{data}%"),
+                                                models.Books.text_begin.ilike(f"%{data}%"),
+                                                models.Books.text_exbegin.ilike(f"%{data}%"),
+                                                models.Books.text_end.ilike(f"%{data}%"),
+                                                models.Books.text_exend.ilike(f"%{data}%"),
+                                                models.Books.title_mono.ilike(f"%{data}%"),
+                                                models.Books.author_mono.ilike(f"%{data}%"),
+                                                models.Books.commentator.ilike(f"%{data}%"),
+                                                models.Books.commentator_mono.ilike(f"%{data}%"),
+                                                models.Books.translator.ilike(f"%{data}%"),
+                                                models.Books.title_known.ilike(f"%{data}%")
+                                              ))
+    return query.all()
