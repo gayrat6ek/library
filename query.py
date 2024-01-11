@@ -95,7 +95,7 @@ def book_create(db:Session,language,file,title,title_known,title_mono,author,aut
 
 
 
-def book_filter(db:Session,illustration,title,author,language,subjects,inventory_number):
+def book_filter(db:Session,illustration,title,author,language,subjects,inventory_number,id,tomb):
     query = db.query(models.Books)
     if illustration is not None:
         query = query.filter(models.Books.cover==illustration)
@@ -109,4 +109,95 @@ def book_filter(db:Session,illustration,title,author,language,subjects,inventory
         query = query.filter(models.Books.subjects.ilike(f"%{subjects}%"))
     if inventory_number is not None:
         query = query.filter(models.Books.inventory_number.ilike(f"%{inventory_number}%"))
+    if id is not None:
+        query = query.filter(models.Books.id==id)
+    if tomb is not None:
+        query = query.filter(models.Books.text_ammabegin==tomb)
     return query.all()
+
+def book_update(db:Session,id,language,file,title,title_known,title_mono,author,author_mono,commentator,commentator_mono,translator,translator_mono,compiler,compiler_mono,date_written,subjects,quantity_ill,quantity_sheet,lines,size,columns,paper,copyist,copy_date,copy_place,type_handwriting,cover,cover_color,stamp,text_begin,text_exbegin,text_ammabegin,text_end,text_exend,colophon,defects,fixation,note,descript_auth,images,inventory_number):
+    query = db.query(models.Books).filter(models.Books.id==id).first()
+    if query:
+        if language is not None:
+            query.language = language
+        if file is not None:
+            query.file = file
+        if title is not None:
+            query.title = title
+        if title_known is not None:
+            query.title_known = title_known
+        if title_mono is not None:
+            query.title_mono = title_mono
+        if author is not None:
+            query.author = author
+        if author_mono is not None:
+            query.author_mono = author_mono
+        if commentator is not None:
+            query.commentator = commentator
+        if commentator_mono is not None:
+            query.commentator_mono = commentator_mono
+        if translator is not None:
+            query.translator = translator
+        if translator_mono is not None:
+            query.translator_mono = translator_mono
+        if compiler is not None:
+            query.compiler = compiler
+        if compiler_mono is not None:
+            query.compiler_mono = compiler_mono
+        if date_written is not None:
+            query.date_written = date_written
+        if subjects is not None:
+            query.subjects = subjects
+        if quantity_ill is not None:
+            query.quantity_ill = quantity_ill
+        if quantity_sheet is not None:
+            query.quantity_sheet = quantity_sheet
+        if lines is not None:
+            query.lines = lines
+        if size is not None:
+            query.size = size
+        if columns is not None:
+            query.columns = columns
+        if paper is not None:
+            query.paper = paper
+        if copyist is not None:
+            query.copyist = copyist
+        if copy_date is not None:
+            query.copy_date = copy_date
+        if copy_place is not None:
+            query.copy_place = copy_place
+        if type_handwriting is not None:
+            query.type_handwriting = type_handwriting
+        if cover is not None:
+            query.cover = cover
+        if cover_color is not None:
+            query.cover_color = cover_color
+        if stamp is not None:
+            query.stamp = stamp
+        if text_begin is not None:
+            query.text_begin = text_begin
+        if text_exbegin is not None:
+            query.text_exbegin = text_exbegin
+        if text_ammabegin is not None:
+            query.text_ammabegin = text_ammabegin
+        if text_end is not None:
+            query.text_end = text_end
+        if text_exend is not None:
+            query.text_exend = text_exend
+        if colophon is not None:
+            query.colophon = colophon
+        if defects is not None:
+            query.defects = defects
+        if fixation is not None:
+            query.fixation = fixation
+        if note is not None:
+            query.note = note
+        if descript_auth is not None:
+            query.descript_auth = descript_auth
+        if images is not None:
+            query.images = images
+        if inventory_number is not None:    
+            query.inventory_number = inventory_number
+        db.commit()
+        db.refresh(query)
+    return query

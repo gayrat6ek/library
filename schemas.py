@@ -31,11 +31,11 @@ class UserCreate(BaseModel):
 class Books(BaseModel):
     id:int
     user_id:int
-    title:str
+    title:Optional[str]=None
     title_mono:Optional[str]=None
     title_known:Optional[str]=None
     title_known:Optional[str]=None
-    author:str
+    author:Optional[str]=None
     author_mono:Optional[str]=None
     commentator:Optional[str]=None
     commentator_mono:Optional[str]=None
@@ -43,17 +43,17 @@ class Books(BaseModel):
     translator_mono:Optional[str]=None
     compiler:Optional[str]=None
     compiler_mono:Optional[str]=None
-    date_written:Optional[datetime]=None
+    date_written:Optional[str]=None
     language:Optional[str]=None
     subjects:Optional[str]=None
     quantity_sheet:Optional[str]=None
     quantity_ill:Optional[str]=None
-    lines:Optional[int]=None
-    columns:Optional[int]=None
+    lines:Optional[str]=None
+    columns:Optional[str]=None
     size:Optional[str]=None
     paper:Optional[str]=None
     copyist:Optional[str]=None
-    copy_date:Optional[datetime]=None
+    copy_date:Optional[str]=None
     copy_place:Optional[str]=None
     type_handwriting:Optional[str]=None
     cover:Optional[str]=None
