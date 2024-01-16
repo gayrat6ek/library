@@ -1,5 +1,5 @@
 from jose import JWTError, jwt
-from typing import Annotated
+from typing import Annotated,List
 from datetime import datetime, timedelta,date
 from sqlalchemy.orm import Session
 from fastapi import Depends, FastAPI, HTTPException,UploadFile,File,Form,Header,Request,status,BackgroundTasks,Security
@@ -110,7 +110,7 @@ async def Book_add(file:UploadFile=File(),
                    note:Annotated[str,Form()]=None,
                    descript_auth:Annotated[str,Form()]=None,
                    columns:Annotated[str,Form()]=None,
-                   images:Annotated[list[str],Form()]=None,
+                   images:Annotated[List[str],Form()]=None,
                    inventory_number:Annotated[str,Form()]=None,
                    db:Session=Depends(utils.get_db),
                    request_user:schemas.UserGet=Depends(utils.get_current_user)):
