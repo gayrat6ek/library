@@ -1,9 +1,9 @@
 from jose import JWTError, jwt
-from typing import Annotated,List
+from typing import Annotated,List,Dict
 from datetime import datetime, timedelta,date
 from sqlalchemy.orm import Session
-from fastapi import Depends, FastAPI, HTTPException,UploadFile,File,Form,Header,Request,status,BackgroundTasks,Security
-from pydantic import ValidationError
+from fastapi import Depends, FastAPI, HTTPException,UploadFile,File,Form,Header,Request,status,BackgroundTasks,Security,Query,Body
+from pydantic import ValidationError,Json
 import schemas
 import bcrypt
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
@@ -72,7 +72,8 @@ async def filter_user(user_name:Optional[str]=None,id:Optional[int]=None,db:Sess
 
 
 @app.post('/books')
-async def Book_add(file:UploadFile=File(),
+async def Book_add(request: Request,
+                    file:UploadFile=File(),
                    title:Annotated[str,Form()]=None,
                    title_mono:Annotated[str,Form()]=None,
                    title_known:Annotated[str,Form()]=None,
@@ -110,7 +111,6 @@ async def Book_add(file:UploadFile=File(),
                    note:Annotated[str,Form()]=None,
                    descript_auth:Annotated[str,Form()]=None,
                    columns:Annotated[str,Form()]=None,
-                   images:Annotated[List[str],Form()]=None,
                    inventory_number:Annotated[str,Form()]=None,
                    db:Session=Depends(utils.get_db),
                    request_user:schemas.UserGet=Depends(utils.get_current_user)):
@@ -122,6 +122,11 @@ async def Book_add(file:UploadFile=File(),
             if not chunk:
                 break
             buffer.write(chunk)
+    params = dict(request.query_params).values()
+    if params:
+        images = list(params)
+    else:
+        images = None
     book_add_query = query.book_create(db=db,
                                        file=file_path,
                                        title=title,
@@ -206,7 +211,8 @@ async def filter_book(title:Optional[str]=None,
     return paginate(book_query)
     
 @app.put('/books',response_model=schemas.Books)
-async def update_book(id:Annotated[int,Form()]=None,
+async def update_book(request: Request,
+    id:Annotated[int,Form()]=None,
                       file:UploadFile=File(None),
                       title:Annotated[str,Form()]=None,
                       title_mono:Annotated[str,Form()]=None,
@@ -246,12 +252,26 @@ async def update_book(id:Annotated[int,Form()]=None,
                         note:Annotated[str,Form()]=None,
                         descript_auth:Annotated[str,Form()]=None,
                         columns:Annotated[str,Form()]=None,
-                        images:Annotated[list[str],Form()]=None,
+                        images:list=Query(None),
                         inventory_number:Annotated[str,Form()]=None,
                         db:Session=Depends(utils.get_db),
                         request_user:schemas.UserGet=Depends(utils.get_current_user)):
-                      
-    filename = utils.generate_random_filename()+file.filename
+    if file is not None:
+        filename = utils.generate_random_filename()+file.filename
+        file_path = f"files/{filename}"
+        with open(file_path, "wb") as buffer:
+            while True:
+                chunk = await file.read(1024)
+                if not chunk:
+                    break
+                buffer.write(chunk)
+    else:
+        filename = None
+    params = dict(request.query_params).values()
+    if params:
+        images = list(params)
+    else:
+        images = None
     book = query.book_update(db=db,
                       id=id,
                         file=filename, 
@@ -289,10 +309,10 @@ async def update_book(id:Annotated[int,Form()]=None,
                         text_exend=text_exend,
                         colophon=colophon,
                         defects=defects,
-                        fixation=fixation,note=note,user_id=request_user.id,
+                        fixation=fixation,note=note,
                         descript_auth=descript_auth,
                         images=images,
-                        inventory_number=inventory_number
+                        inventory_number=inventory_number,
                         )
     
     return book
