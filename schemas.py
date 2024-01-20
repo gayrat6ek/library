@@ -72,6 +72,7 @@ class Books(BaseModel):
     file:Optional[str]=None
     created_at:Optional[datetime]=None
     images:Optional[list]=None
+    inventory_number:Optional[str]=None
     class Config:
         orm_mode=True
 
