@@ -113,6 +113,7 @@ def book_filter(db:Session,illustration,title,author,language,subjects,inventory
         query = query.filter(models.Books.id==id)
     if tomb is not None:
         query = query.filter(models.Books.text_ammabegin==tomb)
+    query = query.order_by(models.Books.id.desc())
     return query.all()
 
 def book_update(db:Session,id,language,file,title,title_known,title_mono,author,author_mono,commentator,commentator_mono,translator,translator_mono,compiler,compiler_mono,date_written,subjects,quantity_ill,quantity_sheet,lines,size,columns,paper,copyist,copy_date,copy_place,type_handwriting,cover,cover_color,stamp,text_begin,text_exbegin,text_ammabegin,text_end,text_exend,colophon,defects,fixation,note,descript_auth,images,inventory_number):
