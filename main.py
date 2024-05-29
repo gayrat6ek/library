@@ -114,7 +114,8 @@ async def Book_add(request: Request,
                    inventory_number:Annotated[str,Form()]=None,
                    db:Session=Depends(utils.get_db),
                    request_user:schemas.UserGet=Depends(utils.get_current_user)):
-    filename = utils.generate_random_filename()+file.filename
+    file_extension = file.filename.split('.')[-1]
+    filename = utils.generate_random_filename()+'.'+file_extension
     file_path = f"files/{filename}"
     with open(file_path, "wb") as buffer:
         while True:
