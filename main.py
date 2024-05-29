@@ -126,6 +126,7 @@ async def Book_add(request: Request,
     params = dict(request.query_params).values()
     if params:
         images = list(params)
+        print(images)
     else:
         images = None
     book_add_query = query.book_create(db=db,
