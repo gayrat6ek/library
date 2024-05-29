@@ -126,7 +126,6 @@ async def Book_add(request: Request,
     params = dict(request.query_params).values()
     if params:
         images = list(params)
-        print(images)
     else:
         images = None
     book_add_query = query.book_create(db=db,
@@ -178,7 +177,8 @@ async def get_images(files: list[UploadFile],db:Session=Depends(utils.get_db),re
     file_obj_list = []
     if files:
         for file in files:
-            filename = utils.generate_random_filename()+file.filename
+            file_extension = file.filename.split('.')[-1]
+            filename = utils.generate_random_filename() + '.' + file_extension
             file_path = f"files/{filename}"
             with open(file_path, "wb") as buffer:
                 while True:
