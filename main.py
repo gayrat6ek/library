@@ -112,7 +112,6 @@ async def Book_add(request: Request,
                    descript_auth:Annotated[str,Form()]=None,
                    columns:Annotated[str,Form()]=None,
                    inventory_number:Annotated[str,Form()]=None,
-                   images:List[UploadFile]=None,
                    db:Session=Depends(utils.get_db),
                    request_user:schemas.UserGet=Depends(utils.get_current_user)):
     file_extension = file.filename.split('.')[-1]
@@ -124,20 +123,9 @@ async def Book_add(request: Request,
             if not chunk:
                 break
             buffer.write(chunk)
-
-    if images:
-        images = []
-        for file in images:
-            file_extension = file.filename.split('.')[-1]
-            filename = utils.generate_random_filename() + '.' + file_extension
-            file_path = f"files/{filename}"
-            with open(file_path, "wb") as buffer:
-                while True:
-                    chunk = await file.read(1024)
-                    if not chunk:
-                        break
-                    buffer.write(chunk)
-            images.append(file_path)
+    params = dict(request.query_params).values()
+    if params:
+        images = list(params)
     else:
         images = None
     book_add_query = query.book_create(db=db,
@@ -265,7 +253,7 @@ async def update_book(request: Request,
                         note:Annotated[str,Form()]=None,
                         descript_auth:Annotated[str,Form()]=None,
                         columns:Annotated[str,Form()]=None,
-                        images : List[UploadFile]=None,
+                        images:list=Query(None),
                         inventory_number:Annotated[str,Form()]=None,
                         db:Session=Depends(utils.get_db),
                         request_user:schemas.UserGet=Depends(utils.get_current_user)):
@@ -281,20 +269,9 @@ async def update_book(request: Request,
                 buffer.write(chunk)
     else:
         filename = None
-
-    if images:
-        images = []
-        for file in images:
-            file_extension = file.filename.split('.')[-1]
-            filename = utils.generate_random_filename() + '.' + file_extension
-            file_path = f"files/{filename}"
-            with open(file_path, "wb") as buffer:
-                while True:
-                    chunk = await file.read(1024)
-                    if not chunk:
-                        break
-                    buffer.write(chunk)
-            images.append(file_path)
+    params = dict(request.query_params).values()
+    if params:
+        images = list(params)
     else:
         images = None
     book = query.book_update(db=db,
