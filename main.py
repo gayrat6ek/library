@@ -73,7 +73,7 @@ async def filter_user(user_name:Optional[str]=None,id:Optional[int]=None,db:Sess
 
 @app.post('/books')
 async def Book_add(request: Request,
-                    file:UploadFile=File(),
+                    file:UploadFile=File(None),
                    title:Annotated[str,Form()]=None,
                    title_mono:Annotated[str,Form()]=None,
                    title_known:Annotated[str,Form()]=None,
@@ -114,15 +114,18 @@ async def Book_add(request: Request,
                    inventory_number:Annotated[str,Form()]=None,
                    db:Session=Depends(utils.get_db),
                    request_user:schemas.UserGet=Depends(utils.get_current_user)):
-    file_extension = file.filename.split('.')[-1]
-    filename = utils.generate_random_filename()+'.'+file_extension
-    file_path = f"files/{filename}"
-    with open(file_path, "wb") as buffer:
-        while True:
-            chunk = await file.read(1024)
-            if not chunk:
-                break
-            buffer.write(chunk)
+    if file is not None:
+        file_extension = file.filename.split('.')[-1]
+        filename = utils.generate_random_filename()+'.'+file_extension
+        file_path = f"files/{filename}"
+        with open(file_path, "wb") as buffer:
+            while True:
+                chunk = await file.read(1024)
+                if not chunk:
+                    break
+                buffer.write(chunk)
+    else:
+        file_path = None
     params = dict(request.query_params).values()
     if params:
         images = list(params)

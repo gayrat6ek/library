@@ -191,7 +191,7 @@ def book_update(db:Session,id,language,file,title,title_known,title_mono,author,
             query.defects = defects
         if fixation is not None:
             query.fixation = fixation
-        if note is not None:
+        if note is not None: 
             query.note = note
         if descript_auth is not None:
             query.descript_auth = descript_auth
