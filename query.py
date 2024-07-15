@@ -219,6 +219,26 @@ def books_search(db:Session,data):
                                                 models.Books.commentator.ilike(f"%{data}%"),
                                                 models.Books.commentator_mono.ilike(f"%{data}%"),
                                                 models.Books.translator.ilike(f"%{data}%"),
-                                                models.Books.title_known.ilike(f"%{data}%")
+                                                models.Books.title_known.ilike(f"%{data}%"),
+                                                models.Books.translator_mono.ilike(f"%{data}%"),
+                                                models.Books.compiler.ilike(f"%{data}%"),
+                                                models.Books.compiler_mono.ilike(f"%{data}%"),
+                                                models.Books.date_written.ilike(f"%{data}%"),
+                                                models.Books.copy_date.ilike(f"%{data}%"),
+                                                models.Books.copy_place.ilike(f"%{data}%"),
+                                                models.Books.copyist.ilike(f"%{data}%"),
+                                                models.Books.note.ilike(f"%{data}%"),
+                                                   models.Books.descript_auth.ilike(f"%{data}%"),
+                                                models.Books.inventory_number.ilike(f"%{data}%"),
+                                                models.Books.size.ilike(f"%{data}%"),
+                                                models.Books.paper.ilike(f"%{data}%"),
+                                                models.Books.cover.ilike(f"%{data}%"),
+                                                models.Books.cover_color.ilike(f"%{data}%"),
+                                                models.Books.stamp.ilike(f"%{data}%"),
+                                              models.Books.defects.ilike(f"%{data}%"),
+                                                models.Books.fixation.ilike(f"%{data}%"),
+                                                models.Books.lines.ilike(f"%{data}%"),
+                                                models.Books.columns.ilike(f"%{data}%"),
+
                                               ))
     return query.all()
